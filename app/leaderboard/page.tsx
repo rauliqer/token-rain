@@ -30,72 +30,66 @@ export default function LeaderboardPage() {
     };
   }, []);
 
-  if (!data) {
-    return (
-      <main style={{ padding: 24, maxWidth: 820, margin: "0 auto" }}>
-        <h1 style={{ margin: 0 }}>Leaderboard</h1>
-        <div style={{ opacity: 0.8, marginTop: 6 }}>Loading…</div>
-      </main>
-    );
-  }
-
-  if (!data.ok) {
-    return (
-      <main style={{ padding: 24, maxWidth: 820, margin: "0 auto" }}>
-        <h1 style={{ margin: 0 }}>Leaderboard</h1>
-        <div style={{ marginTop: 10 }}>❌ Error: {data.error}</div>
-      </main>
-    );
-  }
-
   return (
-    <main style={{ padding: 24, maxWidth: 820, margin: "0 auto" }}>
-      <h1 style={{ margin: 0 }}>Leaderboard</h1>
-      <div style={{ opacity: 0.8, marginTop: 6 }}>
-        Top 100 holders (PoH-only by design)
-      </div>
+    <div className="tr-bg">
+      <div className="tr-wrap">
+        {/* HEADER */}
+        <div className="tr-header">
+          <div className="tr-brand">💧 Token Rain</div>
+          <div className="tr-nav">
+            <a href="/">Home</a>
+            <a href="/leaderboard">Leaderboard</a>
+            <a href="/how-it-works">How it works</a>
+          </div>
+        </div>
 
-      <div
-        style={{
-          marginTop: 14,
-          border: "1px solid #222",
-          borderRadius: 16,
-          overflow: "hidden",
-        }}
-      >
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ textAlign: "left", opacity: 0.85 }}>
-              <th style={{ padding: 12, borderBottom: "1px solid #222" }}>#</th>
-              <th style={{ padding: 12, borderBottom: "1px solid #222" }}>
-                Wallet
-              </th>
-              <th style={{ padding: 12, borderBottom: "1px solid #222" }}>
-                DROPS
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.top.map((row, i) => (
-              <tr key={row.address}>
-                <td style={{ padding: 12, borderBottom: "1px solid #1a1a1a" }}>
-                  {i + 1}
-                </td>
-                <td style={{ padding: 12, borderBottom: "1px solid #1a1a1a" }}>
-                  {short(row.address)}
-                </td>
-                <td style={{ padding: 12, borderBottom: "1px solid #1a1a1a" }}>
-                  {row.drops}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        {/* HERO */}
+        <div className="tr-hero">
+          <h1 className="tr-title">Leaderboard</h1>
+          <div className="tr-subtitle">
+            Top 100 wallets by DROPS (PoH-only by design).
+          </div>
+        </div>
 
-      <div style={{ marginTop: 12, opacity: 0.7 }}>
-        Updated automatically. Contract events only.
+        {/* CONTENT */}
+        <div className="tr-card pad" style={{ marginTop: 16 }}>
+          {!data ? (
+            <div className="tr-muted">Loading…</div>
+          ) : !data.ok ? (
+            <div>
+              <div style={{ fontWeight: 900 }}>❌ Error</div>
+              <div className="tr-muted2" style={{ marginTop: 6 }}>
+                {data.error}
+              </div>
+            </div>
+          ) : (
+            <>
+              <table className="tr-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: 70 }}>#</th>
+                    <th>Wallet</th>
+                    <th style={{ width: 110 }}>DROPS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.top.map((row, i) => (
+                    <tr key={row.address}>
+                      <td>{i + 1}</td>
+                      <td>{short(row.address)}</td>
+                      <td>{row.drops}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="tr-footnote" style={{ marginTop: 12 }}>
+                Updated automatically. Contract events only.
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
