@@ -5,7 +5,7 @@ function short(a: string) {
 }
 
 export default async function LeaderboardPage() {
-  const res = await fetch("http://localhost:3000/api/leaderboard", {
+  const res = await fetch("/api/leaderboard", {
     // en producción Next reescribe esto bien; en local funciona
     cache: "no-store",
   });
