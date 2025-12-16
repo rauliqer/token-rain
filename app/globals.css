@@ -24,3 +24,210 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+/* ---------- Token Rain Theme ---------- */
+
+:root {
+  --tr-bg: #070a12;
+  --tr-card: rgba(10, 14, 24, 0.55);
+  --tr-card-strong: rgba(10, 14, 24, 0.72);
+  --tr-border: rgba(255, 255, 255, 0.10);
+  --tr-border-strong: rgba(255, 255, 255, 0.16);
+  --tr-text: rgba(255, 255, 255, 0.92);
+  --tr-muted: rgba(255, 255, 255, 0.72);
+  --tr-muted2: rgba(255, 255, 255, 0.58);
+  --tr-glow: rgba(110, 176, 255, 0.22);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  color: var(--tr-text);
+  background: var(--tr-bg);
+}
+
+/* Background image + cinematic overlay */
+.tr-bg {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.68) 60%, rgba(0,0,0,0.75) 100%),
+    url("/token-rain-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.tr-wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+
+.tr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--tr-border);
+  border-radius: 18px;
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(10px);
+}
+
+.tr-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+
+.tr-nav {
+  display: flex;
+  gap: 14px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.tr-nav a {
+  text-decoration: none;
+  color: var(--tr-text);
+  opacity: 0.85;
+}
+
+.tr-nav a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.tr-hero {
+  margin-top: 18px;
+  padding: 22px 18px;
+  border: 1px solid var(--tr-border);
+  border-radius: 22px;
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(10px);
+}
+
+.tr-title {
+  margin: 0;
+  font-size: 44px;
+  line-height: 1.05;
+  font-weight: 950;
+  letter-spacing: -0.6px;
+  text-shadow: 0 10px 28px rgba(0,0,0,0.35);
+}
+
+.tr-subtitle {
+  margin-top: 10px;
+  color: var(--tr-muted);
+}
+
+.tr-card {
+  border: 1px solid var(--tr-border);
+  border-radius: 18px;
+  background: var(--tr-card);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+}
+
+.tr-card.pad {
+  padding: 16px;
+}
+
+.tr-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+  .tr-grid { grid-template-columns: 1fr; }
+  .tr-title { font-size: 34px; }
+  .tr-header { flex-direction: column; align-items: flex-start; }
+}
+
+.tr-muted { color: var(--tr-muted); }
+.tr-muted2 { color: var(--tr-muted2); }
+
+.tr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--tr-border);
+  background: rgba(255,255,255,0.06);
+  font-weight: 800;
+}
+
+.tr-btn {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--tr-border-strong);
+  background: linear-gradient(180deg, rgba(80,150,255,0.25), rgba(80,150,255,0.12));
+  box-shadow: 0 10px 26px rgba(0,0,0,0.35), 0 0 0 1px rgba(110,176,255,0.08) inset;
+  color: var(--tr-text);
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.tr-btn:hover {
+  box-shadow: 0 14px 32px rgba(0,0,0,0.42), 0 0 0 1px rgba(110,176,255,0.14) inset;
+}
+
+.tr-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.tr-kpi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 700px) {
+  .tr-kpi { grid-template-columns: 1fr; }
+}
+
+.tr-kpiBox {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--tr-border);
+  background: var(--tr-card-strong);
+  backdrop-filter: blur(12px);
+}
+
+.tr-big {
+  font-size: 46px;
+  font-weight: 950;
+  letter-spacing: -0.6px;
+  margin-top: 6px;
+}
+
+.tr-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tr-table th, .tr-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.tr-table th {
+  text-align: left;
+  color: var(--tr-muted);
+  font-weight: 900;
+}
+
+.tr-footnote {
+  margin-top: 12px;
+  color: var(--tr-muted2);
+}
