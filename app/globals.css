@@ -287,4 +287,33 @@ body {
   position: relative;
   z-index: 1;
 }
+/* ---------- Subtle 3D Parallax Motion ---------- */
+
+/* Move background image very slowly */
+.tr-bg {
+  animation: tr-bg-float 40s ease-in-out infinite;
+}
+
+@keyframes tr-bg-float {
+  0%   { background-position: 50% 50%; }
+  50%  { background-position: 52% 48%; }
+  100% { background-position: 50% 50%; }
+}
+
+/* Foreground particles: slightly faster */
+.tr-bg::before {
+  animation: tr-drift 22s linear infinite;
+}
+
+/* Rain streaks: slightly different speed */
+.tr-bg::after {
+  animation: tr-rain 1.8s linear infinite;
+}
+
+/* Optional: very subtle depth scaling */
+.tr-bg::before,
+.tr-bg::after {
+  transform-origin: center;
+  will-change: transform;
+}
 
