@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import {
-  useAccount,
-  useConnect,
-  useReadContract,
-  useWriteContract,
-} from "wagmi";
+import { useAccount, useConnect, useReadContract, useWriteContract } from "wagmi";
 import { injected } from "wagmi/connectors";
 
 import { TOKEN_RAIN_ADDRESS, tokenRainAbi } from "../lib/contract";
@@ -15,7 +10,6 @@ import { fetchPohStatus, fetchPohSignature } from "../lib/poh";
 const LINEA_CHAIN_ID = 59144;
 const LINEA_CHAIN_ID_HEX = "0x" + LINEA_CHAIN_ID.toString(16);
 
-// 🔐 helpers de red (a prueba de MetaMask despistado)
 async function getWalletChainId(): Promise<number | null> {
   const eth = (window as any).ethereum;
   if (!eth?.request) return null;
@@ -67,7 +61,7 @@ export default function Home() {
 
   const isLinea = walletChainId === LINEA_CHAIN_ID;
 
-  // detectar red REAL del wallet
+  // Track real wallet chain
   useEffect(() => {
     async function refresh() {
       const id = await getWalletChainId();
@@ -80,13 +74,12 @@ export default function Home() {
       eth.on("chainChanged", refresh);
       eth.on("accountsChanged", refresh);
       return () => {
-        eth.removeListener("chainChanged", refresh);
-        eth.removeListener("accountsChanged", refresh);
+        eth.removeListener?.("chainChanged", refresh);
+        eth.removeListener?.("accountsChanged", refresh);
       };
     }
   }, []);
 
-  // leer usuario solo en Linea
   const user = useReadContract({
     address: TOKEN_RAIN_ADDRESS,
     abi: tokenRainAbi,
@@ -98,7 +91,7 @@ export default function Home() {
   const totalDrops = user.data ? user.data[0].toString() : "—";
   const dropsToday = user.data ? user.data[1].toString() : "—";
 
-  // PoH
+  // PoH check
   useEffect(() => {
     let alive = true;
     async function run() {
@@ -128,22 +121,31 @@ export default function Home() {
     return null;
   }, [isConnected, walletChainId, isLinea, poh]);
 
-  async function onClaim() {
-    if (!address) return;
+  async function onPrimaryAction() {
+    // Not connected → connect
+    if (!isConnected) {
+      connect({ connector: injected() });
+      return;
+    }
 
+    // Connected but wrong network → switch
     const current = await getWalletChainId();
     setWalletChainId(current);
-
     if (current !== LINEA_CHAIN_ID) {
       setStatus("Switching to Linea…");
-      await switchWalletToLinea();
-      const after = await getWalletChainId();
-      setWalletChainId(after);
-      if (after !== LINEA_CHAIN_ID) {
-        setStatus("Please switch to Linea in your wallet");
-        return;
+      try {
+        await switchWalletToLinea();
+        const after = await getWalletChainId();
+        setWalletChainId(after);
+        setStatus(after === LINEA_CHAIN_ID ? "" : "Please switch to Linea in your wallet");
+      } catch (e: any) {
+        setStatus(e?.message || "Could not switch to Linea");
       }
+      return;
     }
+
+    // Connected + Linea → claim
+    if (!address) return;
 
     try {
       setStatus("Checking PoH…");
@@ -172,10 +174,15 @@ export default function Home() {
     }
   }
 
+  const primaryLabel = !isConnected
+    ? "Connect MetaMask"
+    : !isLinea
+    ? "Switch to Linea"
+    : "💧 Get a DROP";
+
   return (
     <div className="tr-bg">
-      <div className="tr-wrap">
-
+      <div className="tr-home">
         {/* HEADER */}
         <div className="tr-header">
           <div className="tr-brand">💧 Token Rain</div>
@@ -185,77 +192,58 @@ export default function Home() {
           </div>
         </div>
 
-        {/* HERO */}
-        <div className="tr-hero">
-          <h1 className="tr-title">Collect DROPS.</h1>
-          <div className="tr-subtitle">
-            When it rains, tokens fall.<br />
+        {/* CARD 1: Big hero */}
+        <div className="tr-card tr-heroCard">
+          <h1 className="tr-heroTitle">Collect DROPS.</h1>
+          <div className="tr-heroSub">When it rains, tokens fall.</div>
+          <div className="tr-heroMeta">
             1 transaction = 1 DROP · Max 20/day · PoH required
+          </div>
+
+          <div className="tr-heroBtnRow">
+            <button
+              className="tr-btn"
+              onClick={onPrimaryAction}
+              disabled={isConnected && isLinea && !!claimDisabledReason}
+              title={claimDisabledReason ?? ""}
+            >
+              {primaryLabel}
+            </button>
+          </div>
+
+          {status && <div className="tr-heroStatus">{status}</div>}
+        </div>
+
+        {/* Cards 2 & 3: stats row */}
+        <div className="tr-bottomGrid">
+          <div className="tr-card pad">
+            <div className="tr-muted">Your DROPS</div>
+            <div className="tr-big">💧 {totalDrops}</div>
+            <div className="tr-muted2">Today: {dropsToday} / 20</div>
+          </div>
+
+          <div className="tr-card pad">
+            <div className="tr-muted">PoH</div>
+            <div className="tr-big">
+              {poh === null ? "Checking…" : poh ? "Verified ✅" : "Not verified ❌"}
+            </div>
+            <div className="tr-muted2">
+              Required to claim{" "}
+              {poh === false && (
+                <>
+                  —{" "}
+                  <a href="https://linea.build/hub" target="_blank" rel="noreferrer">
+                    verify
+                  </a>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* MAIN CARD */}
-        <div className="tr-card pad" style={{ marginTop: 16 }}>
-          {!isConnected ? (
-            <button
-              className="tr-btn"
-              onClick={() => connect({ connector: injected() })}
-            >
-              Connect MetaMask
-            </button>
-          ) : !isLinea ? (
-            <button className="tr-btn" onClick={switchWalletToLinea}>
-              Switch to Linea
-            </button>
-          ) : (
-            <>
-              <div className="tr-kpi">
-                <div className="tr-kpiBox">
-                  <div className="tr-muted">Your DROPS</div>
-                  <div className="tr-big">💧 {totalDrops}</div>
-                  <div className="tr-muted2">
-                    Today: {dropsToday} / 20
-                  </div>
-                </div>
-
-                <div className="tr-kpiBox">
-                  <div className="tr-muted">PoH</div>
-                  <div className="tr-big">
-                    {poh ? "Verified ✅" : "Not verified ❌"}
-                  </div>
-                  <div className="tr-muted2">Required to claim</div>
-                </div>
-              </div>
-
-              <button
-                className="tr-btn"
-                style={{ marginTop: 14 }}
-                disabled={!!claimDisabledReason}
-                onClick={onClaim}
-              >
-                💧 Get a DROP
-              </button>
-
-              {claimDisabledReason && (
-                <div className="tr-muted2" style={{ marginTop: 8 }}>
-                  {claimDisabledReason}
-                </div>
-              )}
-
-              {status && (
-                <div className="tr-muted2" style={{ marginTop: 8 }}>
-                  {status}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* FOOTNOTE */}
         <div className="tr-footnote">
           Rewards will be distributed after Linea Exponent rewards are received.
         </div>
-
       </div>
     </div>
   );
