@@ -231,3 +231,60 @@ body {
   margin-top: 12px;
   color: var(--tr-muted2);
 }
+/* Token Rain animated overlay */
+.tr-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.tr-bg::before,
+.tr-bg::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Particles layer */
+.tr-bg::before {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.14) 0 2px, transparent 3px),
+    radial-gradient(circle at 60% 30%, rgba(255,255,255,0.10) 0 2px, transparent 3px),
+    radial-gradient(circle at 80% 60%, rgba(255,255,255,0.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 30% 70%, rgba(255,255,255,0.10) 0 2px, transparent 3px);
+  background-size: 260px 260px;
+  opacity: 0.6;
+  animation: tr-drift 18s linear infinite;
+}
+
+/* Rain streaks layer */
+.tr-bg::after {
+  background: repeating-linear-gradient(
+    115deg,
+    rgba(255,255,255,0.10) 0px,
+    rgba(255,255,255,0.10) 1px,
+    transparent 2px,
+    transparent 16px
+  );
+  opacity: 0.08;
+  transform: translateY(-30%);
+  animation: tr-rain 1.6s linear infinite;
+}
+
+@keyframes tr-rain {
+  0% { transform: translateY(-35%); }
+  100% { transform: translateY(35%); }
+}
+
+@keyframes tr-drift {
+  0% { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-140px, 160px, 0); }
+}
+
+/* Ensure content above overlay */
+.tr-wrap {
+  position: relative;
+  z-index: 1;
+}
+
