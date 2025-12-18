@@ -532,3 +532,47 @@ a:hover {
   background: rgba(255,255,255,0.10);
   color: rgba(255,255,255,1);
 }
+/* ---------- Prize table (The Rain) ---------- */
+
+.tr-prizeTableWrap {
+  margin: 16px auto 6px;
+  max-width: 420px;
+}
+
+.tr-prizeTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.tr-prizeTable thead th {
+  padding: 10px 8px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.85);
+  border-bottom: 1px solid rgba(255,255,255,0.16);
+}
+
+.tr-prizeTable tbody td {
+  padding: 8px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.88);
+}
+
+/* subtle highlight for top 3 */
+.tr-prizeTable tbody tr:nth-child(1) td {
+  color: #fde68a; /* gold */
+}
+.tr-prizeTable tbody tr:nth-child(2) td {
+  color: #e5e7eb; /* silver */
+}
+.tr-prizeTable tbody tr:nth-child(3) td {
+  color: #f5cba7; /* bronze */
+}
+
+/* mobile */
+@media (max-width: 480px) {
+  .tr-prizeTableWrap {
+    max-width: 100%;
+  }
+}

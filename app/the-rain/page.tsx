@@ -16,53 +16,98 @@ export default function TheRainPage() {
           </div>
         </div>
 
-        <div className="tr-card pad tr-heroCard">
-          <h1 className="tr-heroTitle">The Rain</h1>
-          <div className="tr-heroSub">
-            This is how rewards will be distributed after the campaign ends.
-          </div>
+       <div className="tr-card pad tr-heroCard">
+  <h1 className="tr-heroTitle">The Rain</h1>
+  <div className="tr-heroSub">
+    Exact prize structure for Token Rain.
+  </div>
 
-          <div className="tr-cardDivider" />
+  <div className="tr-cardDivider" />
 
-          <div className="tr-cardBody">
-            <p className="tr-subLine">
-              All rewards earned from the Linea Exponent campaign will be
-              distributed to participants of Token Rain.
-            </p>
+  <div className="tr-cardBody">
+    <p className="tr-subLine">
+      Token Rain will distribute <b>100% of the Linea Exponent rewards</b> earned by this
+      project to participants after the campaign ends.
+    </p>
 
-            <br />
+    <br />
 
-            <h3 className="tr-cardTitle">🎲 Lottery Winners</h3>
-            <p className="tr-subLine">
-              A portion of the rewards will be assigned to randomly selected
-              wallets.
-            </p>
-            <p className="tr-subLine">
-              Each DROP you collect acts as one ticket in the lottery.
-              <br />
-              More DROPS = higher chance to win.
-            </p>
+    <h3 className="tr-cardTitle">🏆 Prize Pools</h3>
+    <p className="tr-subLine">
+      The reward pool is split into two parts:
+      <br />• <b>Lottery prizes</b> (fixed winners)
+      <br />• <b>Community share</b> (everyone else, proportional)
+    </p>
 
-            <br />
+    <br />
 
-            <h3 className="tr-cardTitle">🌧 Proportional Distribution</h3>
-            <p className="tr-subLine">
-              The remaining rewards will be distributed proportionally based on
-              the total number of DROPS collected.
-            </p>
+   <h3 className="tr-cardTitle">🎲 Lottery Prizes (Top Winners)</h3>
 
-            <br />
+<p className="tr-subLine">
+  We will pick <b>10 winners</b> in a <b>live draw on X</b>.
+  <br />
+  Each DROP equals <b>1 lottery ticket</b>.
+</p>
 
-            <h3 className="tr-cardTitle">🔒 Important Notes</h3>
-            <p className="tr-subLine">
-              • DROPS are non-transferable
-              <br />
-              • Only wallets that passed Linea PoH can participate
-              <br />
-              • Final distribution happens after the campaign ends
-            </p>
-          </div>
-        </div>
+<div className="tr-prizeTableWrap">
+  <table className="tr-prizeTable">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Reward</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1st</td><td>10%</td></tr>
+      <tr><td>2nd</td><td>9%</td></tr>
+      <tr><td>3rd</td><td>8%</td></tr>
+      <tr><td>4th</td><td>7%</td></tr>
+      <tr><td>5th</td><td>6%</td></tr>
+      <tr><td>6th</td><td>5%</td></tr>
+      <tr><td>7th</td><td>4%</td></tr>
+      <tr><td>8th</td><td>3%</td></tr>
+      <tr><td>9th</td><td>2%</td></tr>
+      <tr><td>10th</td><td>1%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+    <br />
+
+    <h3 className="tr-cardTitle">🌧 Community Share (Everyone Else)</h3>
+    <p className="tr-subLine">
+      The remaining <b>45%</b> is distributed to <b>all eligible participants</b>
+      <br />
+      <b>proportionally to the number of DROPS collected</b>.
+    </p>
+
+    <br />
+
+    <h3 className="tr-cardTitle">✅ Eligibility</h3>
+    <p className="tr-subLine">
+      • You must have passed <b>Linea Proof of Humanity (PoH)</b>
+      <br />
+      • You need at least <b>1 DROP</b> to qualify
+      <br />
+      • DROPS are <b>non-transferable</b>
+    </p>
+
+    <br />
+
+    <h3 className="tr-cardTitle">⏳ Timing</h3>
+    <p className="tr-subLine">
+      DROPS collection ends on the <b>final official day of Linea Exponent</b>.
+      <br />
+      Rewards are distributed <b>after Linea sends Exponent rewards</b>.
+    </p>
+
+    <div className="tr-footnote" style={{ marginTop: 16 }}>
+      This page describes the intended distribution. Final numbers are based on the total Exponent rewards received.
+    </div>
+  </div>
+</div>
+
       </div>
     </div>
   );

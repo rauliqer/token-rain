@@ -248,7 +248,7 @@ useEffect(() => {
 
         {/* CARD 1: Big hero */}
         <div className="tr-card tr-heroCard">
-          <h1 className="tr-heroTitle">Collect DROPS.</h1>
+          <h1 className="tr-heroTitle">Collect DROPS</h1>
           <div className="tr-heroSub">When it rains, tokens fall.</div>
           <div className="tr-heroMeta">
             1 transaction = 1 DROP · Max 20/day · PoH required
