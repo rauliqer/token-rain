@@ -215,7 +215,7 @@ export default function Home() {
             </button>
           </div>
 
-          {status && <div className="tr-heroStatus">{status}</div>}
+          {status && <div className="tr-statusPill tr-pop">{status}</div>}
         </div>
 
         {/* Cards 2 & 3: stats row */}

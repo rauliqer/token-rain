@@ -411,3 +411,77 @@ a:hover {
     animation: none !important;
   }
 }
+/* ---------- UX polish: subtle motion + hover ---------- */
+
+/* Card hover: very soft lift + glow */
+.tr-card {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.tr-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.22);
+  box-shadow:
+    0 22px 64px rgba(0,0,0,0.52),
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* Button hover + active press */
+.tr-btn {
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease, opacity 140ms ease;
+}
+
+.tr-btn:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 22px 54px rgba(0,0,0,0.55);
+}
+
+.tr-btn:active {
+  transform: translateY(1px);
+}
+
+/* Drop icon micro-float */
+.tr-dropImg {
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.tr-btn:hover .tr-dropImg {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 14px rgba(96,165,250,0.75));
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .tr-card, .tr-btn, .tr-dropImg {
+    transition: none !important;
+  }
+  .tr-card:hover {
+    transform: none !important;
+  }
+  .tr-btn:active {
+    transform: none !important;
+  }
+}
+/* Status pill */
+.tr-statusPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.18);
+  color: rgba(255,255,255,0.78);
+  margin-top: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.tr-pop {
+  animation: tr-pop 260ms ease-out;
+}
+
+@keyframes tr-pop {
+  0% { transform: scale(0.98); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
+}
