@@ -485,3 +485,35 @@ a:hover {
   0% { transform: scale(0.98); opacity: 0.6; }
   100% { transform: scale(1); opacity: 1; }
 }
+/* ---------- Countdown pill (premium) ---------- */
+.tr-countdownRow {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.tr-countdownPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.18);
+
+  color: rgba(255,255,255,0.78);
+  font-weight: 800;
+  font-size: 14px;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+}
+
+.tr-countdownTime {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.6px;
+  color: rgba(255,255,255,0.92);
+}

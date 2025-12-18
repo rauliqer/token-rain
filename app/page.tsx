@@ -51,6 +51,33 @@ async function switchWalletToLinea(): Promise<void> {
 }
 
 export default function Home() {
+const [timeLeft, setTimeLeft] = useState<string>("");
+
+useEffect(() => {
+  function format(ms: number) {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+
+  function tick() {
+    const now = new Date();
+    const next = new Date(Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() + 1,
+      0, 0, 0, 0
+    ));
+    setTimeLeft(format(next.getTime() - now.getTime()));
+  }
+
+  tick();
+  const id = setInterval(tick, 1000);
+  return () => clearInterval(id);
+}, []);
+
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { writeContractAsync } = useWriteContract();
@@ -216,6 +243,14 @@ export default function Home() {
           </div>
 
           {status && <div className="tr-statusPill tr-pop">{status}</div>}
+{isConnected && isLinea && (
+  <div className="tr-countdownRow">
+    <div className="tr-countdownPill">
+      Next reset in{" "}
+      <span className="tr-countdownTime">{timeLeft}</span> (UTC)
+    </div>
+  </div>
+)}
         </div>
 
         {/* Cards 2 & 3: stats row */}
