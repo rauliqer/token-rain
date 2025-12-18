@@ -517,3 +517,18 @@ a:hover {
   letter-spacing: 0.6px;
   color: rgba(255,255,255,0.92);
 }
+/* X (Twitter) icon in header */
+.tr-xLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.80);
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.tr-xLink:hover {
+  background: rgba(255,255,255,0.10);
+  color: rgba(255,255,255,1);
+}

@@ -37,10 +37,31 @@ export default function LeaderboardPage() {
         <div className="tr-header">
           <div className="tr-brand">💧 Token Rain</div>
           <div className="tr-nav">
-            <a href="/">Home</a>
-            <a href="/leaderboard">Leaderboard</a>
-            <a href="/how-it-works">How it works</a>
-          </div>
+  <a href="/leaderboard">Leaderboard</a>
+  <a href="/how-it-works">How it works</a>
+
+  <a
+    href="https://x.com/TU_USUARIO"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Token Rain on X"
+    className="tr-xLink"
+  >
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M18.9 2H22.3L14.8 10.3L23.6 22H16.8L11.5 15.1L5.4 22H2L10 13.2L1.6 2H8.6L13.3 8.1L18.9 2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </a>
+</div>
+
         </div>
 
         {/* HERO */}
