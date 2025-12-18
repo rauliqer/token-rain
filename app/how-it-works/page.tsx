@@ -11,6 +11,7 @@ export default function HowItWorksPage() {
           <div className="tr-nav">
             <a href="/">Home</a>
             <a href="/leaderboard">Leaderboard</a>
+            <a href="/the-rain">The Rain</a>
             <a href="/how-it-works">How it works</a>
           </div>
         </div>

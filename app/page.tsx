@@ -218,6 +218,7 @@ useEffect(() => {
   </div>
  <div className="tr-nav">
   <a href="/leaderboard">Leaderboard</a>
+  <a href="/the-rain">The Rain</a>
   <a href="/how-it-works">How it works</a>
 
   <a
