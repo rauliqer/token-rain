@@ -217,6 +217,7 @@ useEffect(() => {
     Token Rain
   </div>
  <div className="tr-nav">
+  <a href="/">Home</a>
   <a href="/leaderboard">Leaderboard</a>
   <a href="/the-rain">The Rain</a>
   <a href="/how-it-works">How it works</a>
