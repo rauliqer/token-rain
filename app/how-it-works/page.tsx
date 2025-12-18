@@ -7,7 +7,10 @@ export default function HowItWorksPage() {
 
         {/* HEADER */}
         <div className="tr-header">
-          <div className="tr-brand">💧 Token Rain</div>
+          <div className="tr-brand">
+    <img className="tr-dropImg md" src="/drop.png" alt="drop" />
+    Token Rain
+  </div>
           <div className="tr-nav">
   <a href="/">Home</a>
   <a href="/leaderboard">Leaderboard</a>
