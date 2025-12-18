@@ -253,7 +253,7 @@ export default function Home() {
     </div>
   </div>
 </div>
-
+</div>
         <div className="tr-footnote">
           Rewards will be distributed after Linea Exponent rewards are received.
         </div>
