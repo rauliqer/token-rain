@@ -1,3 +1,14 @@
+/* ---------- Font: SF Pro Display (system stack) ---------- */
+
+:root {
+  --font-sf: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+html,
+body {
+  font-family: var(--font-sf);
+}
 /* ========= Base / Next defaults ========= */
 
 :root {
@@ -384,4 +395,11 @@ a:hover {
   padding: 16px 28px;       /* más presencia */
   font-size: 20px;          /* texto más grande */
   letter-spacing: 0.4px;
+}
+/* Bigger titles for stat cards */
+.tr-bottomGrid .tr-muted {
+  font-size: 20px;       /* antes ~14–16 */
+  font-weight: 900;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
