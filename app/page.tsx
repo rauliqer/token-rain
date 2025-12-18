@@ -175,22 +175,26 @@ export default function Home() {
   }
 
   const primaryLabel = !isConnected
-    ? "Connect MetaMask"
-    : !isLinea
-    ? "Switch to Linea"
-    : "💧 Get a DROP";
+  ? "Connect MetaMask"
+  : !isLinea
+  ? "Switch to Linea"
+  : "Get a DROP";
 
   return (
     <div className="tr-bg">
       <div className="tr-home">
         {/* HEADER */}
         <div className="tr-header">
-          <div className="tr-brand">💧 Token Rain</div>
-          <div className="tr-nav">
-            <a href="/leaderboard">Leaderboard</a>
-            <a href="/how-it-works">How it works</a>
-          </div>
-        </div>
+  <div className="tr-brand">
+    <img className="tr-dropImg md" src="/drop.png" alt="drop" />
+    Token Rain
+  </div>
+  <div className="tr-nav">
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/how-it-works">How it works</a>
+  </div>
+</div>
+
 
         {/* CARD 1: Big hero */}
         <div className="tr-card tr-heroCard">
@@ -207,7 +211,7 @@ export default function Home() {
               disabled={isConnected && isLinea && !!claimDisabledReason}
               title={claimDisabledReason ?? ""}
             >
-              {primaryLabel}
+              <img className="tr-dropImg sm" src="/drop.png" alt="drop" /> {primaryLabel}
             </button>
           </div>
 
@@ -217,29 +221,38 @@ export default function Home() {
         {/* Cards 2 & 3: stats row */}
         <div className="tr-bottomGrid">
           <div className="tr-card pad">
-            <div className="tr-muted">Your DROPS</div>
-            <div className="tr-big">💧 {totalDrops}</div>
-            <div className="tr-muted2">Today: {dropsToday} / 20</div>
-          </div>
+  <div className="tr-cardTitle">Your DROPS</div>
+  <div className="tr-cardDivider" />
+  <div className="tr-cardBody">
+    <div className="tr-valueRow">
+      <img className="tr-dropImg lg" src="/drop.png" alt="drop" />
+      <div className="tr-valueBig">{totalDrops}</div>
+    </div>
+    <div className="tr-subLine">Today: {dropsToday} / 20</div>
+  </div>
+</div>
+
 
           <div className="tr-card pad">
-            <div className="tr-muted">PoH</div>
-            <div className="tr-big">
-              {poh === null ? "Checking…" : poh ? "Verified ✅" : "Not verified ❌"}
-            </div>
-            <div className="tr-muted2">
-              Required to claim{" "}
-              {poh === false && (
-                <>
-                  —{" "}
-                  <a href="https://linea.build/hub" target="_blank" rel="noreferrer">
-                    verify
-                  </a>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+  <div className="tr-cardTitle">PoH</div>
+  <div className="tr-cardDivider" />
+  <div className="tr-cardBody">
+    <div className="tr-statusOk">
+      {poh === null ? "Checking…" : poh ? "Verified ✅" : "Not verified ❌"}
+    </div>
+    <div className="tr-statusSub">
+      Required to claim{" "}
+      {poh === false && (
+        <>
+          —{" "}
+          <a href="https://linea.build/hub" target="_blank" rel="noreferrer">
+            verify
+          </a>
+        </>
+      )}
+    </div>
+  </div>
+</div>
 
         <div className="tr-footnote">
           Rewards will be distributed after Linea Exponent rewards are received.

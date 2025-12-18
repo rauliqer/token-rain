@@ -77,7 +77,13 @@ export default function LeaderboardPage() {
                     <tr key={row.address}>
                       <td>{i + 1}</td>
                       <td>{short(row.address)}</td>
-                      <td>{row.drops}</td>
+                      <td>
+  <span className="tr-dropsCell">
+    {row.drops}
+    <img className="tr-dropImg sm" src="/drop.png" alt="drop" />
+  </span>
+</td>
+
                     </tr>
                   ))}
                 </tbody>
