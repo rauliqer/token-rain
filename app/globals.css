@@ -363,3 +363,25 @@ a:hover {
     animation: none !important;
   }
 }
+/* Center text inside Token Rain cards */
+.tr-card {
+  text-align: center;
+}
+
+/* Center hero card content */
+.tr-heroCard {
+  text-align: center;
+}
+
+/* Center bottom stat cards */
+.tr-bottomGrid .tr-card {
+  text-align: center;
+}
+/* Make primary CTA more compact and prominent */
+.tr-heroBtnRow .tr-btn {
+  width: auto;              /* no full width */
+  min-width: 240px;         /* tamaño mínimo elegante */
+  padding: 16px 28px;       /* más presencia */
+  font-size: 20px;          /* texto más grande */
+  letter-spacing: 0.4px;
+}
