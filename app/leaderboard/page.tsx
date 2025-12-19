@@ -45,7 +45,7 @@ export default function LeaderboardPage() {
   <a href="/the-rain">The Rain</a>
   <a href="/how-it-works">How it works</a>
 <a
-              href="https://x.com/TU_USUARIO"
+              href="https://x.com/T0kenRain"
               target="_blank"
               rel="noreferrer"
               aria-label="Token Rain on X"
