@@ -34,7 +34,7 @@ function chanceTopK(d: number, T: number, N: number, K: number) {
 // Exact share of the 45% community pool
 function communityShare45(d: number, T: number) {
   if (T <= 0 || d <= 0) return 0;
-  return (d / T) * 45;
+  return (d / T) * 100;
 }
 
 export default function LeaderboardPage() {
