@@ -143,7 +143,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 <div className="tr-muted2" style={{ marginTop: 8 }}>
-                  Chance is an estimate based on current DROPS. Community share is proportional (45% pool).
+                 Reward chance is an estimate based on current DROPS. Community share is proportional (45% pool).
                 </div>
               </div>
 
@@ -153,8 +153,8 @@ export default function LeaderboardPage() {
                     <th style={{ width: 70 }}>#</th>
                     <th>Wallet</th>
                     <th style={{ width: 110 }}>DROPS</th>
-                    <th style={{ width: 150 }}>Chance (Top 10)</th>
-                    <th style={{ width: 190 }}>Community share (45%)</th>
+                    <th style={{ width: 150 }}>Reward chance</th>
+                    <th style={{ width: 190 }}>Community share</th>
                   </tr>
                 </thead>
 
