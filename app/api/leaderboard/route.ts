@@ -37,9 +37,17 @@ export async function GET() {
     }
 
     const rows = Array.from(counts.entries())
-      .map(([address, drops]) => ({ address, drops }))
-      .sort((a, b) => b.drops - a.drops)
-      .slice(0, 100);
+  .map(([address, drops]) => ({
+    address,              // completa (para lógica)
+    wallet: maskAddress(address), // enmascarada (para UI)
+    drops,
+  }))
+  .sort((a, b) => b.drops - a.drops)
+  .slice(0, 100);
+function maskAddress(addr: string) {
+  if (!addr || addr.length < 10) return addr;
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+}
 
     return NextResponse.json({
       ok: true,
