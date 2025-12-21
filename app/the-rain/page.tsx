@@ -60,17 +60,17 @@ export default function TheRainPage() {
             <h3 className="tr-cardTitle">🏆 Prize Pools</h3>
             <p className="tr-subLine">
               The reward pool is split into two parts:
-              <br />• <b>Lottery prizes</b> (fixed winners)
+              <br />• <b>Random selection prizes</b> (fixed winners)
               <br />• <b>Community share</b> (everyone else, proportional)
             </p>
 
             <br />
 
-            <h3 className="tr-cardTitle">🎲 Lottery Prizes (Top Winners)</h3>
+            <h3 className="tr-cardTitle">🎲 Random Selection (Top Winners)</h3>
             <p className="tr-subLine">
-              We will pick <b>10 winners</b> in a <b>live draw on X</b>.
+              We will pick <b>10 winners</b> in a <b>live selection on X</b>.
               <br />
-              Each DROP equals <b>1 lottery ticket</b>.
+              Each DROP equals <b>1 entry</b>.
               <br />
               More DROPS = <b>higher chance</b> to win.
             </p>
@@ -134,6 +134,94 @@ export default function TheRainPage() {
             <p className="tr-subLine">
               The remaining <b>45%</b> is distributed to <b>all eligible participants</b>{" "}
               proportionally to the total number of DROPS collected.
+            </p>
+
+            <br />
+
+            <h3 className="tr-cardTitle">📌 Example (if Exponent rewards = 5,000,000 LINEA)</h3>
+            <p className="tr-subLine">
+              If Token Rain receives <b>5,000,000 LINEA</b> tokens from Exponent, the payout would look like this:
+            </p>
+
+            <div className="tr-prizeTableWrap">
+              <table className="tr-prizeTable">
+                <thead>
+                  <tr>
+                    <th>Bucket</th>
+                    <th>Percent</th>
+                    <th>Tokens</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1st place</td>
+                    <td>10%</td>
+                    <td>500,000</td>
+                  </tr>
+                  <tr>
+                    <td>2nd place</td>
+                    <td>9%</td>
+                    <td>450,000</td>
+                  </tr>
+                  <tr>
+                    <td>3rd place</td>
+                    <td>8%</td>
+                    <td>400,000</td>
+                  </tr>
+                  <tr>
+                    <td>4th place</td>
+                    <td>7%</td>
+                    <td>350,000</td>
+                  </tr>
+                  <tr>
+                    <td>5th place</td>
+                    <td>6%</td>
+                    <td>300,000</td>
+                  </tr>
+                  <tr>
+                    <td>6th place</td>
+                    <td>5%</td>
+                    <td>250,000</td>
+                  </tr>
+                  <tr>
+                    <td>7th place</td>
+                    <td>4%</td>
+                    <td>200,000</td>
+                  </tr>
+                  <tr>
+                    <td>8th place</td>
+                    <td>3%</td>
+                    <td>150,000</td>
+                  </tr>
+                  <tr>
+                    <td>9th place</td>
+                    <td>2%</td>
+                    <td>100,000</td>
+                  </tr>
+                  <tr>
+                    <td>10th place</td>
+                    <td>1%</td>
+                    <td>50,000</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Community share</b>
+                    </td>
+                    <td>
+                      <b>45%</b>
+                    </td>
+                    <td>
+                      <b>2,250,000</b>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p className="tr-subLine" style={{ marginTop: 10 }}>
+              Example: if total DROPS = <b>10,000</b> and you have <b>120</b> DROPS, your community share would be:
+              <br />
+              2,250,000 × (120 / 10,000) = <b>27,000 LINEA</b>
             </p>
 
             <br />
