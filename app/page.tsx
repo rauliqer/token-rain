@@ -52,6 +52,7 @@ async function switchWalletToLinea(): Promise<void> {
 
 export default function Home() {
 const [timeLeft, setTimeLeft] = useState<string>("");
+const dailyLimitReached = dropsToday >= 20;
 
 useEffect(() => {
   function format(ms: number) {
@@ -259,7 +260,7 @@ useEffect(() => {
             <button
               className="tr-btn"
               onClick={onPrimaryAction}
-              disabled={isConnected && isLinea && !!claimDisabledReason}
+              disabled={dailyLimitReached && isConnected && isLinea && !!claimDisabledReason}
               title={claimDisabledReason ?? ""}
             >
               <img className="tr-dropImg sm" src="/drop.png" alt="drop" /> {primaryLabel}
@@ -267,6 +268,9 @@ useEffect(() => {
           </div>
 
           {status && <div className="tr-statusPill tr-pop">{status}</div>}
+{isConnected && isLinea && dailyLimitReached && (
+  <div className="tr-limitRed">Daily limit reached</div>
+)}
 {isConnected && isLinea && (
   <div className="tr-countdownRow">
     <div className="tr-countdownPill">
