@@ -51,65 +51,68 @@ async function switchWalletToLinea(): Promise<void> {
 }
 
 export default function Home() {
-async function copyLink() {
-  try {
-    await navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  } catch {
-    // fallback: no-op
-  }
-}
-
-const [timeLeft, setTimeLeft] = useState<string>("");
-
-useEffect(() => {
-  function format(ms: number) {
-    const total = Math.max(0, Math.floor(ms / 1000));
-    const h = Math.floor(total / 3600);
-    const m = Math.floor((total % 3600) / 60);
-    const s = total % 60;
-    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-  }
-
-  function tick() {
-    const now = new Date();
-    const next = new Date(Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate() + 1,
-      0, 0, 0, 0
-    ));
-    setTimeLeft(format(next.getTime() - now.getTime()));
-  }
-
-  tick();
-  const id = setInterval(tick, 1000);
-  return () => clearInterval(id);
-}, []);
-
+export default function Home() {
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { writeContractAsync } = useWriteContract();
 
+  // ---- State (ALL state first) ----
+  const [timeLeft, setTimeLeft] = useState<string>("");
+
   const [walletChainId, setWalletChainId] = useState<number | null>(null);
   const [poh, setPoh] = useState<null | boolean>(null);
-const [isMobile, setIsMobile] = useState(false);
-const [hasInjectedWallet, setHasInjectedWallet] = useState(true);
-const [copied, setCopied] = useState(false);
-const isDesktopNoWallet = !isMobile && !hasInjectedWallet;
-
-useEffect(() => {
-  const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
-  const mobile = /Android|iPhone|iPad|iPod/i.test(ua);
-  setIsMobile(mobile);
-
-  // Detect injected wallet (MetaMask in-app browser injects window.ethereum)
-  const hasWallet =
-    typeof window !== "undefined" && typeof (window as any).ethereum !== "undefined";
-  setHasInjectedWallet(hasWallet);
-}, []);
   const [status, setStatus] = useState("");
+
+  const [isMobile, setIsMobile] = useState(false);
+  const [hasInjectedWallet, setHasInjectedWallet] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  const isDesktopNoWallet = !isMobile && !hasInjectedWallet;
+
+  // ---- Effects ----
+  useEffect(() => {
+    // Countdown to 00:00 UTC
+    function format(ms: number) {
+      const total = Math.max(0, Math.floor(ms / 1000));
+      const h = Math.floor(total / 3600);
+      const m = Math.floor((total % 3600) / 60);
+      const s = total % 60;
+      return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+
+    function tick() {
+      const now = new Date();
+      const next = new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0)
+      );
+      setTimeLeft(format(next.getTime() - now.getTime()));
+    }
+
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+    const mobile = /Android|iPhone|iPad|iPod/i.test(ua);
+    setIsMobile(mobile);
+
+    const hasWallet =
+      typeof window !== "undefined" && typeof (window as any).ethereum !== "undefined";
+    setHasInjectedWallet(hasWallet);
+  }, []);
+
+  // ---- Helpers (after state exists) ----
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // fallback: no-op
+    }
+  }
 
   const isLinea = walletChainId === LINEA_CHAIN_ID;
 
@@ -302,12 +305,7 @@ useEffect(() => {
           </div>
 
           {status && <div className="tr-statusPill tr-pop">{status}</div>}
-{isDesktopNoWallet && (
-  <div className="tr-limitRed">
-    MetaMask is required to use this app.
-  </div>
-)}
-{isMobile && !hasInjectedWallet && (
+{isMobile && !hasInjectedWallet ? (
   <div className="tr-mobileNote">
     Mobile users: please open this site in the MetaMask in-app browser to connect your wallet.
     <small>
@@ -320,10 +318,11 @@ useEffect(() => {
       </button>
     </div>
   </div>
-)}
-{isConnected && isLinea && dailyLimitReached && (
+) : isDesktopNoWallet ? (
+  <div className="tr-limitRed">MetaMask is required to use this app.</div>
+) : isConnected && isLinea && dailyLimitReached ? (
   <div className="tr-limitRed">Daily limit reached</div>
-)}
+) : null}
 {isConnected && isLinea && (
   <div className="tr-countdownRow">
     <div className="tr-countdownPill">
