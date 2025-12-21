@@ -51,7 +51,6 @@ async function switchWalletToLinea(): Promise<void> {
 }
 
 export default function Home() {
-export default function Home() {
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
   const { writeContractAsync } = useWriteContract();
