@@ -69,7 +69,12 @@ export default function LeaderboardPage() {
 
     const myDrops = myRow ? Number(myRow.drops || 0) : 0;
 
-    return { totalDropsAll, myDrops };
+    const myRank =
+      myRow && address
+        ? data.top.findIndex((r) => r.address.toLowerCase() === address.toLowerCase()) + 1
+        : null;
+
+    return { totalDropsAll, myDrops, myRank, myRow };
   }, [data, address]);
 
   return (
@@ -117,7 +122,7 @@ export default function LeaderboardPage() {
           <div className="tr-subtitle">Top 100 wallets by DROPS (PoH-only by design).</div>
         </div>
 
-        {/* STATS: Your DROPS + Total DROPS */}
+        {/* CONTENT */}
         <div className="tr-card pad" style={{ marginTop: 16 }}>
           {!data ? (
             <div className="tr-muted">Loading…</div>
@@ -130,20 +135,9 @@ export default function LeaderboardPage() {
             </div>
           ) : (
             <>
+              {/* Total DROPS */}
               <div className="tr-cardBody" style={{ marginBottom: 14 }}>
                 <div className="tr-subLine">
-                  <b>Your DROPS:</b>{" "}
-                  {isConnected ? (
-                    <>
-                      {formatInt(computed?.myDrops ?? 0)}{" "}
-                      <img className="tr-dropImg sm" src="/drop.png" alt="drop" />
-                    </>
-                  ) : (
-                    "—"
-                  )}
-                </div>
-
-                <div className="tr-subLine" style={{ marginTop: 6 }}>
                   <b>Total DROPS:</b> {formatInt(computed?.totalDropsAll ?? 0)}{" "}
                   <img className="tr-dropImg sm" src="/drop.png" alt="drop" />
                 </div>
@@ -165,6 +159,39 @@ export default function LeaderboardPage() {
                 </thead>
 
                 <tbody>
+                  {/* YOU row (duplicated above leaderboard) */}
+                  {isConnected && computed?.myRow && (
+                    <tr key="you-row" className="tr-youRow">
+                      <td>{computed.myRank ?? "—"}</td>
+                     <td>
+  <span className="tr-youBadge">You</span>
+</td>
+
+                      <td>
+                        <span className="tr-dropsCell">
+                          {Number(computed.myDrops)}
+                          <img className="tr-dropImg sm" src="/drop.png" alt="drop" />
+                        </span>
+                      </td>
+
+                      <td>
+                        {computed.totalDropsAll > 0
+                          ? `≈ ${pct(
+                              chanceTop10(Number(computed.myDrops), computed.totalDropsAll),
+                              1
+                            )}`
+                          : "—"}
+                      </td>
+
+                      <td>
+                        {computed.totalDropsAll > 0
+                          ? pct(communityShare45(Number(computed.myDrops), computed.totalDropsAll), 2)
+                          : "—"}
+                      </td>
+                    </tr>
+                  )}
+
+                  {/* Leaderboard rows */}
                   {data.top.map((row, i) => {
                     const T = computed?.totalDropsAll ?? 0;
                     const d = Number(row.drops || 0);
