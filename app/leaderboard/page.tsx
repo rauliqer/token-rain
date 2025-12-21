@@ -13,6 +13,9 @@ type ApiResp =
   | { ok: false; error: string };
 
 const TOP_PRIZES = 10;
+function formatInt(n: number) {
+  return n.toLocaleString("en-US");
+}
 
 function chanceTopK(d: number, T: number, N: number, K: number) {
   if (d <= 0 || T <= 0) return 0;
