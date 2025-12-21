@@ -62,7 +62,6 @@ async function copyLink() {
 }
 
 const [timeLeft, setTimeLeft] = useState<string>("");
-const isDesktopNoWallet = !isMobile && !hasInjectedWallet;
 
 useEffect(() => {
   function format(ms: number) {
@@ -98,6 +97,7 @@ useEffect(() => {
 const [isMobile, setIsMobile] = useState(false);
 const [hasInjectedWallet, setHasInjectedWallet] = useState(true);
 const [copied, setCopied] = useState(false);
+const isDesktopNoWallet = !isMobile && !hasInjectedWallet;
 
 useEffect(() => {
   const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
