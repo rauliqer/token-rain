@@ -51,7 +51,18 @@ async function switchWalletToLinea(): Promise<void> {
 }
 
 export default function Home() {
+async function copyLink() {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  } catch {
+    // fallback: no-op
+  }
+}
+
 const [timeLeft, setTimeLeft] = useState<string>("");
+const isDesktopNoWallet = !isMobile && !hasInjectedWallet;
 
 useEffect(() => {
   function format(ms: number) {
@@ -84,6 +95,20 @@ useEffect(() => {
 
   const [walletChainId, setWalletChainId] = useState<number | null>(null);
   const [poh, setPoh] = useState<null | boolean>(null);
+const [isMobile, setIsMobile] = useState(false);
+const [hasInjectedWallet, setHasInjectedWallet] = useState(true);
+const [copied, setCopied] = useState(false);
+
+useEffect(() => {
+  const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+  const mobile = /Android|iPhone|iPad|iPod/i.test(ua);
+  setIsMobile(mobile);
+
+  // Detect injected wallet (MetaMask in-app browser injects window.ethereum)
+  const hasWallet =
+    typeof window !== "undefined" && typeof (window as any).ethereum !== "undefined";
+  setHasInjectedWallet(hasWallet);
+}, []);
   const [status, setStatus] = useState("");
 
   const isLinea = walletChainId === LINEA_CHAIN_ID;
@@ -150,7 +175,16 @@ useEffect(() => {
   }, [isConnected, walletChainId, isLinea, poh]);
 
   async function onPrimaryAction() {
-    // Not connected → connect
+  if (!hasInjectedWallet) {
+  if (isMobile) {
+    setStatus("Open this site in the MetaMask in-app browser");
+  } else {
+    setStatus("Please install MetaMask to continue");
+    window.open("https://metamask.io/download/", "_blank");
+  }
+  return;
+}  
+// Not connected → connect
     if (!isConnected) {
       connect({ connector: injected() });
       return;
@@ -268,6 +302,25 @@ useEffect(() => {
           </div>
 
           {status && <div className="tr-statusPill tr-pop">{status}</div>}
+{isDesktopNoWallet && (
+  <div className="tr-limitRed">
+    MetaMask is required to use this app.
+  </div>
+)}
+{isMobile && !hasInjectedWallet && (
+  <div className="tr-mobileNote">
+    Mobile users: please open this site in the MetaMask in-app browser to connect your wallet.
+    <small>
+      Copy the link, open MetaMask → Browser, and paste it there.
+    </small>
+
+    <div className="tr-mobileNoteBtnRow">
+      <button className="tr-miniBtn" onClick={copyLink} type="button">
+        {copied ? "Copied ✅" : "Copy link"}
+      </button>
+    </div>
+  </div>
+)}
 {isConnected && isLinea && dailyLimitReached && (
   <div className="tr-limitRed">Daily limit reached</div>
 )}
