@@ -52,7 +52,6 @@ async function switchWalletToLinea(): Promise<void> {
 
 export default function Home() {
 const [timeLeft, setTimeLeft] = useState<string>("");
-const dailyLimitReached = dropsToday >= 20;
 
 useEffect(() => {
   function format(ms: number) {
@@ -118,6 +117,7 @@ useEffect(() => {
 
   const totalDrops = user.data ? user.data[0].toString() : "—";
   const dropsToday = user.data ? user.data[1].toString() : "—";
+  const dailyLimitReached = Number(dropsToday) >= 20;
 
   // PoH check
   useEffect(() => {
