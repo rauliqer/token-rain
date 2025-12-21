@@ -13,6 +13,9 @@ type ApiResp =
   | { ok: false; error: string };
 
 const TOP_PRIZES = 10;
+function pct(n: number, decimals = 1) {
+  return `${n.toFixed(decimals)}%`;
+}
 function formatInt(n: number) {
   return n.toLocaleString("en-US");
 }
@@ -174,9 +177,15 @@ export default function LeaderboardPage() {
                       <td>
                         {computed.totalDropsAll > 0
                           ? `≈ ${pct(
-                              chanceTop10(Number(computed.myDrops), computed.totalDropsAll),
-                              1
-                            )}`
+  chanceTopK(
+    Number(computed.myDrops),
+    computed.totalDropsAll,
+    data.totalWallets,
+    TOP_PRIZES
+  ),
+  1
+)
+}`
                           : "—"}
                       </td>
 
@@ -205,7 +214,7 @@ export default function LeaderboardPage() {
                           </span>
                         </td>
 
-                        <td>{T > 0 ? `≈ ${pct(chanceTop10(d, T), 1)}` : "—"}</td>
+                        <td>{T > 0 ? `≈ ${pct(chanceTopK(d, T, data.totalWallets, TOP_PRIZES), 1)}` : "—"}</td>
 
                         <td>{T > 0 ? pct(communityShare45(d, T), 2) : "—"}</td>
                       </tr>
