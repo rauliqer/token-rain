@@ -14,23 +14,17 @@ type ApiResp =
 
 const TOP_PRIZES = 10;
 
-function formatInt(n: number) {
-  return n.toLocaleString("en-US");
-}
+function chanceTopK(d: number, T: number, N: number, K: number) {
+  if (d <= 0 || T <= 0) return 0;
 
-function pct(n: number, decimals = 1) {
-  return `${n.toFixed(decimals)}%`;
-}
+  // If there are fewer (or equal) participants than prizes, everyone wins at least once.
+  if (N > 0 && N <= K) return 100;
 
-// Chance to be selected at least once among 10 picks (estimate)
-// chance = 1 - (1 - d/T)^10
-function chanceTop10(d: number, T: number) {
-  if (T <= 0 || d <= 0) return 0;
+  // Otherwise, keep an estimate (still fine for UX)
   const p = d / T;
-  const chance = 1 - Math.pow(1 - p, TOP_PRIZES);
+  const chance = 1 - Math.pow(1 - p, K);
   return Math.max(0, Math.min(1, chance)) * 100;
 }
-
 // Exact share of the 45% community pool
 function communityShare45(d: number, T: number) {
   if (T <= 0 || d <= 0) return 0;
