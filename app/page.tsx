@@ -260,8 +260,8 @@ useEffect(() => {
             <button
               className="tr-btn"
               onClick={onPrimaryAction}
-              disabled={(isConnected && isLinea && dailyLimitReached) || !!claimDisabledReason}
-              title={claimDisabledReason ?? ""}
+              disabled={isConnected && isLinea && dailyLimitReached}
+              title={dailyLimitReached ? "Daily limit reached" : ""}
             >
               <img className="tr-dropImg sm" src="/drop.png" alt="drop" /> {primaryLabel}
             </button>
