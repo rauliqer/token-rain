@@ -13,6 +13,71 @@ type ApiResp =
   | { ok: false; error: string };
 
 const TOP_PRIZES = 10;
+function makeRng(seed = 123456789) {
+  let s = seed >>> 0;
+  return () => {
+    s = (1664525 * s + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+function rewardChanceWeightedNoReplace(
+  weights: number[],
+  K: number,
+  iterations = 20000,
+  seed = 1337
+) {
+  const N = weights.length;
+  const out = new Array(N).fill(0);
+
+  if (N === 0) return out;
+  if (N <= K) {
+    for (let i = 0; i < N; i++) out[i] = weights[i] > 0 ? 100 : 0;
+    return out;
+  }
+
+  const rng = makeRng(seed);
+
+  for (let t = 0; t < iterations; t++) {
+    const idx = Array.from({ length: N }, (_, i) => i);
+    const w = weights.slice();
+    let total = w.reduce((a, b) => a + b, 0);
+
+    const won = new Array(N).fill(false);
+
+    for (let draw = 0; draw < K; draw++) {
+      if (idx.length === 0 || total <= 0) break;
+
+      const r = rng() * total;
+      let acc = 0;
+      let pickPos = 0;
+
+      for (let j = 0; j < idx.length; j++) {
+        acc += w[j];
+        if (acc >= r) {
+          pickPos = j;
+          break;
+        }
+      }
+
+      const pickedIndex = idx[pickPos];
+      won[pickedIndex] = true;
+
+      total -= w[pickPos];
+      idx.splice(pickPos, 1);
+      w.splice(pickPos, 1);
+    }
+
+    for (let i = 0; i < N; i++) {
+      if (won[i]) out[i] += 1;
+    }
+  }
+
+  for (let i = 0; i < N; i++) {
+    out[i] = (out[i] / iterations) * 100;
+  }
+  return out;
+}
 function pct(n: number, decimals = 1) {
   return `${n.toFixed(decimals)}%`;
 }
@@ -61,7 +126,11 @@ export default function LeaderboardPage() {
     if (!data || !data.ok) return null;
 
     const totalDropsAll = data.top.reduce((sum, r) => sum + Number(r.drops || 0), 0);
+const weights = data.top.map((r) => Number(r.drops || 0));
+const chances = rewardChanceWeightedNoReplace(weights, TOP_PRIZES, 20000, 1337);
 
+const chanceByAddress = new Map<string, number>();
+data.top.forEach((r, i) => chanceByAddress.set(r.address.toLowerCase(), chances[i]));
     const myRow =
       address
         ? data.top.find((r) => String(r.address).toLowerCase() === address.toLowerCase())
@@ -74,7 +143,7 @@ export default function LeaderboardPage() {
         ? data.top.findIndex((r) => r.address.toLowerCase() === address.toLowerCase()) + 1
         : null;
 
-    return { totalDropsAll, myDrops, myRank, myRow };
+    return { totalDropsAll, myDrops, myRank, myRow, chanceByAddress };
   }, [data, address]);
 
   return (
@@ -162,7 +231,9 @@ export default function LeaderboardPage() {
                   {/* YOU row (duplicated above leaderboard) */}
                   {isConnected && computed?.myRow && (
                     <tr key="you-row" className="tr-youRow">
-                      <td>{computed.myRank ?? "—"}</td>
+                      <td>{computed?.myRow
+    ? `≈ ${pct(computed.chanceByAddress.get(computed.myRow.address.toLowerCase()) ?? 0, 2)}`
+    : "—"}</td>
                      <td>
   <span className="tr-youBadge">You</span>
 </td>
@@ -214,7 +285,7 @@ export default function LeaderboardPage() {
                           </span>
                         </td>
 
-                        <td>{T > 0 ? `≈ ${pct(chanceTopK(d, T, data.totalWallets, TOP_PRIZES), 1)}` : "—"}</td>
+                        <td>{`≈ ${pct(computed?.chanceByAddress.get(row.address.toLowerCase()) ?? 0, 2)}`}</td>
 
                         <td>{T > 0 ? pct(communityShare45(d, T), 2) : "—"}</td>
                       </tr>
