@@ -230,43 +230,37 @@ data.top.forEach((r, i) => chanceByAddress.set(r.address.toLowerCase(), chances[
                 <tbody>
                   {/* YOU row (duplicated above leaderboard) */}
                   {isConnected && computed?.myRow && (
-                    <tr key="you-row" className="tr-youRow">
-                      <td>{computed?.myRow
-    ? `≈ ${pct(computed.chanceByAddress.get(computed.myRow.address.toLowerCase()) ?? 0, 2)}`
-    : "—"}</td>
-                     <td>
-  <span className="tr-youBadge">You</span>
-</td>
+  <tr key="you-row" className="tr-youRow">
+    {/* # */}
+    <td>{computed.myRank ?? "—"}</td>
 
-                      <td>
-                        <span className="tr-dropsCell">
-                          {Number(computed.myDrops)}
-                          <img className="tr-dropImg sm" src="/drop.png" alt="drop" />
-                        </span>
-                      </td>
+    {/* Wallet */}
+    <td>
+      <span className="tr-youBadge">You</span>
+    </td>
 
-                      <td>
-                        {computed.totalDropsAll > 0
-                          ? `≈ ${pct(
-  chanceTopK(
-    Number(computed.myDrops),
-    computed.totalDropsAll,
-    data.totalWallets,
-    TOP_PRIZES
-  ),
-  1
-)
-}`
-                          : "—"}
-                      </td>
+    {/* DROPS */}
+    <td>
+      <span className="tr-dropsCell">
+        {Number(computed.myDrops)}drop
+        <img className="tr-dropImg sm" src="/drop.png" alt="drop" />
+      </span>
+    </td>
 
-                      <td>
-                        {computed.totalDropsAll > 0
-                          ? pct(communityShare45(Number(computed.myDrops), computed.totalDropsAll), 2)
-                          : "—"}
-                      </td>
-                    </tr>
-                  )}
+    {/* Reward chance */}
+    <td>
+      {`≈ ${pct(
+        computed.chanceByAddress.get(computed.myRow.address.toLowerCase()) ?? 0,
+        2
+      )}`}
+    </td>
+
+    {/* Community share */}
+    <td>
+      {pct((Number(computed.myDrops) / (computed.totalDropsAll || 1)) * 100, 2)}
+    </td>
+  </tr>
+)}
 
                   {/* Leaderboard rows */}
                   {data.top.map((row, i) => {
