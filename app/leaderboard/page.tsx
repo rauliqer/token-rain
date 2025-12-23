@@ -242,7 +242,7 @@ data.top.forEach((r, i) => chanceByAddress.set(r.address.toLowerCase(), chances[
     {/* DROPS */}
     <td>
       <span className="tr-dropsCell">
-        {Number(computed.myDrops)}drop
+        {Number(computed.myDrops)}
         <img className="tr-dropImg sm" src="/drop.png" alt="drop" />
       </span>
     </td>
