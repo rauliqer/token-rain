@@ -1,72 +1,36 @@
 "use client";
-
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useMemo, useState } from "react";
-import { useAccount, useConnect, useReadContract, useWriteContract } from "wagmi";
-import { injected } from "wagmi/connectors";
+import {
+  useAccount,
+  useReadContract,
+  useWriteContract,
+  useChainId,
+  useSwitchChain,
+  useDisconnect,
+} from "wagmi";
 
 import { TOKEN_RAIN_ADDRESS, tokenRainAbi } from "../lib/contract";
 import { fetchPohStatus, fetchPohSignature } from "../lib/poh";
 
 const LINEA_CHAIN_ID = 59144;
-const LINEA_CHAIN_ID_HEX = "0x" + LINEA_CHAIN_ID.toString(16);
-
-async function getWalletChainId(): Promise<number | null> {
-  const eth = (window as any).ethereum;
-  if (!eth?.request) return null;
-  const hex = await eth.request({ method: "eth_chainId" });
-  return parseInt(hex, 16);
-}
-
-async function switchWalletToLinea(): Promise<void> {
-  const eth = (window as any).ethereum;
-  if (!eth?.request) throw new Error("Wallet not found");
-
-  try {
-    await eth.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: LINEA_CHAIN_ID_HEX }],
-    });
-  } catch (e: any) {
-    if (e?.code === 4902) {
-      await eth.request({
-        method: "wallet_addEthereumChain",
-        params: [
-          {
-            chainId: LINEA_CHAIN_ID_HEX,
-            chainName: "Linea",
-            nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-            rpcUrls: ["https://rpc.linea.build"],
-            blockExplorerUrls: ["https://lineascan.build"],
-          },
-        ],
-      });
-      await eth.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: LINEA_CHAIN_ID_HEX }],
-      });
-    } else {
-      throw e;
-    }
-  }
-}
-
 export default function Home() {
   const { address, isConnected } = useAccount();
-  const { connect } = useConnect();
+  const { openConnectModal } = useConnectModal();
+  const { disconnect } = useDisconnect();
+
+  const chainId = useChainId();
+  const { switchChainAsync } = useSwitchChain();
+
+  const isLinea = chainId === LINEA_CHAIN_ID;
+
   const { writeContractAsync } = useWriteContract();
+  const walletReady = isConnected && !!address;
 
   // ---- State (ALL state first) ----
   const [timeLeft, setTimeLeft] = useState<string>("");
-
-  const [walletChainId, setWalletChainId] = useState<number | null>(null);
   const [poh, setPoh] = useState<null | boolean>(null);
   const [status, setStatus] = useState("");
-
-  const [isMobile, setIsMobile] = useState(false);
-  const [hasInjectedWallet, setHasInjectedWallet] = useState(true);
-  const [copied, setCopied] = useState(false);
-
-  const isDesktopNoWallet = !isMobile && !hasInjectedWallet;
 
   // ---- Effects ----
   useEffect(() => {
@@ -92,157 +56,114 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
-    const mobile = /Android|iPhone|iPad|iPod/i.test(ua);
-    setIsMobile(mobile);
-
-    const hasWallet =
-      typeof window !== "undefined" && typeof (window as any).ethereum !== "undefined";
-    setHasInjectedWallet(hasWallet);
-  }, []);
-
-  // ---- Helpers (after state exists) ----
-  async function copyLink() {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // fallback: no-op
-    }
-  }
-
-  const isLinea = walletChainId === LINEA_CHAIN_ID;
-
-  // Track real wallet chain
-  useEffect(() => {
-    async function refresh() {
-      const id = await getWalletChainId();
-      setWalletChainId(id);
-    }
-    refresh();
-
-    const eth = (window as any).ethereum;
-    if (eth?.on) {
-      eth.on("chainChanged", refresh);
-      eth.on("accountsChanged", refresh);
-      return () => {
-        eth.removeListener?.("chainChanged", refresh);
-        eth.removeListener?.("accountsChanged", refresh);
-      };
-    }
-  }, []);
-
+  
   const user = useReadContract({
-    address: TOKEN_RAIN_ADDRESS,
-    abi: tokenRainAbi,
-    functionName: "getUser",
-    args: address ? [address] : undefined,
-    query: { enabled: !!address && isLinea },
-  });
+  address: TOKEN_RAIN_ADDRESS,
+  abi: tokenRainAbi,
+  functionName: "getUser",
+  args: address ? [address] : undefined,
+  query: { enabled: !!address && isLinea },
+});
 
-  const totalDrops = user.data ? user.data[0].toString() : "—";
-  const dropsToday = user.data ? user.data[1].toString() : "—";
-  const dailyLimitReached = Number(dropsToday) >= 20;
+const totalDrops = user.data ? user.data[0].toString() : "—";
+const dropsToday = user.data ? user.data[1].toString() : "—";
+const dailyLimitReached = Number(dropsToday) >= 20;
 
-  // PoH check
-  useEffect(() => {
-    let alive = true;
-    async function run() {
-      if (!address) {
-        setPoh(null);
-        return;
-      }
-      try {
-        const ok = await fetchPohStatus(address);
-        if (alive) setPoh(ok);
-      } catch {
-        if (alive) setPoh(null);
-      }
-    }
-    run();
-    return () => {
-      alive = false;
-    };
-  }, [address]);
+// PoH check
+useEffect(() => {
+  let alive = true;
 
-  const claimDisabledReason = useMemo(() => {
-    if (!isConnected) return "Connect wallet";
-    if (walletChainId === null) return "Detecting network…";
-    if (!isLinea) return "Wrong network";
-    if (poh === null) return "Checking PoH…";
-    if (poh === false) return "PoH required";
-    return null;
-  }, [isConnected, walletChainId, isLinea, poh]);
-
-  async function onPrimaryAction() {
-  if (!hasInjectedWallet) {
-  if (isMobile) {
-    setStatus("Open this site in the MetaMask in-app browser");
-  } else {
-    setStatus("Please install MetaMask to continue");
-    window.open("https://metamask.io/download/", "_blank");
-  }
-  return;
-}  
-// Not connected → connect
-    if (!isConnected) {
-      connect({ connector: injected() });
+  async function run() {
+    if (!address) {
+      setPoh(null);
       return;
     }
-
-    // Connected but wrong network → switch
-    const current = await getWalletChainId();
-    setWalletChainId(current);
-    if (current !== LINEA_CHAIN_ID) {
-      setStatus("Switching to Linea…");
-      try {
-        await switchWalletToLinea();
-        const after = await getWalletChainId();
-        setWalletChainId(after);
-        setStatus(after === LINEA_CHAIN_ID ? "" : "Please switch to Linea in your wallet");
-      } catch (e: any) {
-        setStatus(e?.message || "Could not switch to Linea");
-      }
-      return;
-    }
-
-    // Connected + Linea → claim
-    if (!address) return;
-
     try {
-      setStatus("Checking PoH…");
       const ok = await fetchPohStatus(address);
-      if (!ok) {
-        setStatus("PoH required");
-        return;
-      }
-
-      setStatus("Fetching PoH signature…");
-      const sig = await fetchPohSignature(address);
-
-      setStatus("Claiming DROP… confirm in wallet");
-      await writeContractAsync({
-        chainId: LINEA_CHAIN_ID,
-        address: TOKEN_RAIN_ADDRESS,
-        abi: tokenRainAbi,
-        functionName: "claimDrop",
-        args: [sig],
-      });
-
-      setStatus("✅ DROP claimed");
-      setTimeout(() => window.location.reload(), 900);
-    } catch (e: any) {
-      setStatus(e?.shortMessage || e?.message || "Claim failed");
+      if (alive) setPoh(ok);
+    } catch {
+      if (alive) setPoh(null);
     }
   }
 
-  const primaryLabel = !isConnected
-  ? "Connect MetaMask"
+  run();
+  return () => {
+    alive = false;
+  };
+}, [address]);
+
+const claimDisabledReason = useMemo(() => {
+  if (dailyLimitReached) return "Daily limit reached";
+  if (isConnected && isLinea && poh === null) return "Checking PoH…";
+  if (isConnected && isLinea && poh === false) return "PoH required";
+  return null;
+}, [dailyLimitReached, isConnected, isLinea, poh]);
+
+const primaryLabel = !walletReady
+  ? "Connect wallet"
   : !isLinea
   ? "Switch to Linea"
+  : dailyLimitReached
+  ? "Daily limit reached"
+  : poh === false
+  ? "PoH required"
   : "Get a DROP";
+
+async function onPrimaryAction() {
+  // Not connected (or reconnecting without address) → open RainbowKit modal
+  if (!walletReady) {
+    if (openConnectModal) openConnectModal();
+    else setStatus("Connect modal unavailable");
+    return;
+  }
+
+  // Connected but wrong network → switch
+  if (!isLinea) {
+    setStatus("Switching to Linea…");
+    try {
+      if (!switchChainAsync) throw new Error("Switch not available");
+      await switchChainAsync({ chainId: LINEA_CHAIN_ID });
+      setStatus("");
+    } catch {
+      setStatus("Please switch to Linea in your wallet");
+    }
+    return;
+  }
+
+  // Daily limit
+  if (dailyLimitReached) {
+    setStatus("Daily limit reached");
+    return;
+  }
+
+  // Claim
+  try {
+    setStatus("Checking PoH…");
+    const ok = await fetchPohStatus(address!);
+    if (!ok) {
+      setStatus("PoH required — verify on Linea Hub");
+      return;
+    }
+
+    setStatus("Fetching PoH signature…");
+    const sig = await fetchPohSignature(address!);
+
+    setStatus("Claiming DROP… confirm in wallet");
+    await writeContractAsync({
+      chainId: LINEA_CHAIN_ID,
+      address: TOKEN_RAIN_ADDRESS,
+      abi: tokenRainAbi,
+      functionName: "claimDrop",
+      args: [sig],
+    });
+
+    setStatus("✅ DROP claimed");
+    setTimeout(() => window.location.reload(), 900);
+  } catch (e: any) {
+    setStatus(e?.shortMessage || e?.message || "Claim failed");
+  }
+}
+
 
   return (
     <div className="tr-bg">
@@ -291,37 +212,45 @@ export default function Home() {
           <div className="tr-heroMeta">
             1 transaction = 1 DROP · Max 20/day · PoH required
           </div>
+{walletReady && address && (
+  <div className="tr-muted" style={{ marginTop: 10, display: "flex", gap: 10, justifyContent: "center", alignItems: "center" }}>
+    <span>Connected: {address.slice(0, 6)}…{address.slice(-4)}</span>
+    <button
+      type="button"
+      className="tr-miniBtn"
+      onClick={() => disconnect()}
+    >
+      Disconnect
+    </button>
+  </div>
+)}
 
-          <div className="tr-heroBtnRow">
-            <button
-              className="tr-btn"
-              onClick={onPrimaryAction}
-              disabled={isConnected && isLinea && dailyLimitReached}
-              title={dailyLimitReached ? "Daily limit reached" : ""}
-            >
-              <img className="tr-dropImg sm" src="/drop.png" alt="drop" /> {primaryLabel}
-            </button>
-          </div>
+         <div className="tr-heroBtnRow">
+ <button
+  className="tr-btn"
+  onClick={onPrimaryAction}
+  disabled={walletReady && isLinea && dailyLimitReached}
+  title={walletReady && isLinea && dailyLimitReached ? "Daily limit reached" : ""}
+>
+  <img className="tr-dropImg sm" src="/drop.png" alt="drop" /> {primaryLabel}
+</button>
+</div>
+{!isConnected && (
+  <div className="tr-muted" style={{ marginTop: 12 }}>
+    Connect your wallet to start collecting DROPS.
+  </div>
+)}
+
 
           {status && <div className="tr-statusPill tr-pop">{status}</div>}
-{isMobile && !hasInjectedWallet ? (
-  <div className="tr-mobileNote">
-    Mobile users: please open this site in the MetaMask in-app browser to connect your wallet.
-    <small>
-      Copy the link, open MetaMask → Browser, and paste it there.
-    </small>
-
-    <div className="tr-mobileNoteBtnRow">
-      <button className="tr-miniBtn" onClick={copyLink} type="button">
-        {copied ? "Copied ✅" : "Copy link"}
-      </button>
-    </div>
-  </div>
-) : isDesktopNoWallet ? (
-  <div className="tr-limitRed">MetaMask is required to use this app.</div>
-) : isConnected && isLinea && dailyLimitReached ? (
+{isConnected && isLinea && dailyLimitReached && (
   <div className="tr-limitRed">Daily limit reached</div>
-) : null}
+)}
+{!isConnected && (
+  <div className="tr-muted2" style={{ marginTop: 10 }}>
+    Connect your wallet using the button in the header to start collecting DROPS.
+  </div>
+)}
 {isConnected && isLinea && (
   <div className="tr-countdownRow">
     <div className="tr-countdownPill">
