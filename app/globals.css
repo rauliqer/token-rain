@@ -713,13 +713,6 @@ body::after {
       rgba(0,0,0,0.56) 60%,
       rgba(0,0,0,0.64) 100%
     ),
-    repeating-linear-gradient(
-      115deg,
-      rgba(255,255,255,0.10) 0px,
-      rgba(255,255,255,0.10) 1px,
-      transparent 2px,
-      transparent 18px
-    );
 
   opacity: 1;
   transform: translateZ(0);
@@ -739,5 +732,59 @@ body::after {
 .tr-bg::before,
 .tr-bg::after {
   content: none !important;
+}
+/* ===============================
+   GLASS that works everywhere
+   =============================== */
+
+.tr-card,
+.tr-header,
+.tr-statusPill,
+.tr-countdownPill {
+  position: relative;
+  overflow: hidden;
+
+  /* fallback glass look (works even if backdrop-filter is unsupported) */
+  background: rgba(10, 16, 26, 0.22);
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow:
+    0 18px 50px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+/* highlight sheen + subtle depth */
+.tr-card::before,
+.tr-header::before,
+.tr-statusPill::before,
+.tr-countdownPill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(1200px 500px at 20% 0%, rgba(255,255,255,0.14), transparent 60%),
+    radial-gradient(900px 380px at 90% 30%, rgba(120,180,255,0.10), transparent 55%);
+
+  opacity: 0.9;
+}
+
+/* REAL blur when supported */
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .tr-card,
+  .tr-header,
+  .tr-statusPill,
+  .tr-countdownPill {
+    background: rgba(10, 16, 26, 0.18);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
+  }
+
+  .tr-card::before,
+  .tr-header::before,
+  .tr-statusPill::before,
+  .tr-countdownPill::before {
+    opacity: 0.75; /* a bit softer when blur is on */
+  }
 }
 
