@@ -673,3 +673,71 @@ a:hover {
   background: rgba(120, 180, 255, 0.18);
   color: #cfe3ff;
 }
+/* ===============================
+   GLASS FIX (PC + iOS Safari)
+   Move background layers to body so backdrop-filter always works
+   =============================== */
+
+/* Turn off the complex bg layers on .tr-bg (we replace them on body) */
+.tr-bg {
+  background: transparent !important;
+  animation: none !important;
+}
+
+/* Main background image layer */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  background: url("/token-rain-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  transform: translateZ(0);
+}
+
+/* Overlay + subtle effects layer */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,0.40) 0%,
+      rgba(0,0,0,0.56) 60%,
+      rgba(0,0,0,0.64) 100%
+    ),
+    repeating-linear-gradient(
+      115deg,
+      rgba(255,255,255,0.10) 0px,
+      rgba(255,255,255,0.10) 1px,
+      transparent 2px,
+      transparent 18px
+    );
+
+  opacity: 1;
+  transform: translateZ(0);
+}
+
+/* Force glass rendering (some browsers need compositing hints) */
+.tr-card,
+.tr-header,
+.tr-statusPill,
+.tr-countdownPill {
+  background: rgba(10, 16, 26, 0.22) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  transform: translateZ(0);
+  will-change: backdrop-filter;
+}
+.tr-bg::before,
+.tr-bg::after {
+  content: none !important;
+}
+
