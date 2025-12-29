@@ -26,7 +26,6 @@ const config = getDefaultConfig({
     [linea.id]: http("https://rpc.linea.build"),
   },
   ssr: true,
-autoConnect: false,
 });
 
 const queryClient = new QueryClient();
