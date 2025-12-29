@@ -69,14 +69,7 @@ a:hover {
   pointer-events: none;
   z-index: 0;
 
-  background: linear-gradient(
-    180deg,
-    rgba(0,0,0,0.40) 0%,
-    rgba(0,0,0,0.56) 60%,
-    rgba(0,0,0,0.64) 100%
-  );
-
-  /* floating particles baked into the overlay */
+  /* overlay + particles */
   background-image:
     linear-gradient(
       180deg,
@@ -91,10 +84,23 @@ a:hover {
     radial-gradient(circle at 88% 26%, rgba(255,255,255,0.09) 0 2px, transparent 3px),
     radial-gradient(circle at 20% 72%, rgba(255,255,255,0.08) 0 2px, transparent 3px);
 
-  background-size: cover, 320px 320px;
+  /* 👇 clave: control de repetición por capa */
+  background-repeat: no-repeat, repeat;
+
+  /* 👇 más grande = desaparece el “cuadrado” */
+  background-size: cover, 900px 900px;
+
+  /* 👇 animamos el background-position (no transform) */
+  background-position: center, 0 0;
   opacity: 1;
-  animation: tr-float 30s linear infinite;
+  animation: tr-particles-drift 34s linear infinite;
 }
+
+@keyframes tr-particles-drift {
+  from { background-position: center, 0 0; }
+  to   { background-position: center, -220px 260px; }
+}
+
 
 /* soft rain streaks */
 .tr-bg::after {
