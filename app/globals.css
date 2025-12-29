@@ -44,12 +44,12 @@ a:hover {
   min-height: 100vh;
   overflow: hidden;
 
-  background:
-    linear-gradient(180deg, rgba(0,0,0,0.40) 0%, rgba(0,0,0,0.56) 60%, rgba(0,0,0,0.64) 100%),
-    url("/token-rain-bg.jpg");
+  /* IMPORTANT: helps backdrop-filter behave consistently */
+  isolation: isolate;
+
+  background: url("/token-rain-bg.jpg");
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
 
   /* subtle “3D” float */
   animation: tr-bg-float 52s ease-in-out infinite;
@@ -64,12 +64,26 @@ a:hover {
 /* floating particles layer */
 .tr-bg::before {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
 
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.40) 0%,
+    rgba(0,0,0,0.56) 60%,
+    rgba(0,0,0,0.64) 100%
+  );
+
+  /* floating particles baked into the overlay */
   background-image:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,0.40) 0%,
+      rgba(0,0,0,0.56) 60%,
+      rgba(0,0,0,0.64) 100%
+    ),
     radial-gradient(circle at 12% 18%, rgba(255,255,255,0.12) 0 2px, transparent 3px),
     radial-gradient(circle at 28% 40%, rgba(255,255,255,0.10) 0 2px, transparent 3px),
     radial-gradient(circle at 52% 22%, rgba(255,255,255,0.08) 0 2px, transparent 3px),
@@ -77,15 +91,15 @@ a:hover {
     radial-gradient(circle at 88% 26%, rgba(255,255,255,0.09) 0 2px, transparent 3px),
     radial-gradient(circle at 20% 72%, rgba(255,255,255,0.08) 0 2px, transparent 3px);
 
-  background-size: 320px 320px;
-  opacity: 0.42;
+  background-size: cover, 320px 320px;
+  opacity: 1;
   animation: tr-float 30s linear infinite;
 }
 
 /* soft rain streaks */
 .tr-bg::after {
   content: "";
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
