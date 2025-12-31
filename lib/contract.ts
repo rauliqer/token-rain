@@ -1,5 +1,5 @@
 export const TOKEN_RAIN_ADDRESS =
-  "0x544dc9418f6a6a73B0Cbcad356Abd2c88fA8d890" as const;
+  "0xf1E634f385345eA76aecfC0bCC80AA09527FEF98" as const;
 
 export const tokenRainAbi = [
   {
