@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createPublicClient, http, parseAbiItem } from "viem";
 import { linea } from "viem/chains";
 
-const CONTRACT = "0xf1E634f385345eA76aecfC0bCC80AA09527FEF98" as const;
+const CONTRACT = "0x5b1acB0E96858727A749319dE736Ed11747d899D" as const;
 
 // 👇 pon aquí el bloque de deploy cuando lo tengas (recomendado)
 const DEPLOY_BLOCK = BigInt(process.env.DEPLOY_BLOCK ?? "0");
