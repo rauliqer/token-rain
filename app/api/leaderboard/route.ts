@@ -20,7 +20,7 @@ const client = createPublicClient({
 });
 
 // Tamaño de chunk. Si sigue fallando, baja a 20_000n o 10_000n
-const CHUNK = 50_000n;
+const CHUNK = BigInt("50000");
 
 function maskAddress(addr: string) {
   if (!addr || addr.length < 10) return addr;
