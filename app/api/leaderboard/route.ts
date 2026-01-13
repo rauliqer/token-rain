@@ -49,7 +49,7 @@ export async function GET() {
         counts.set(user, (counts.get(user) ?? 0) + 1);
       }
 
-      from = to + 1n;
+      from = to + BigInt(1);;
     }
 
     const rows = Array.from(counts.entries())
